@@ -1,6 +1,9 @@
 package com.smoothspark.msgme.ui.base;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 import com.smoothspark.msgme.MsgMeApplication;
 import com.smoothspark.msgme.di.component.ActivityComponent;
 import com.smoothspark.msgme.di.component.DaggerActivityComponent;
+import com.smoothspark.msgme.di.module.ActivityModule;
 import com.smoothspark.msgme.utils.NetworkUtil;
 
 import butterknife.Unbinder;
@@ -28,6 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityComponent = DaggerActivityComponent.builder()
+                .activityModule(new ActivityModule(this))
                 .applicationComponent(((MsgMeApplication) getApplication()).getComponent())
                 .build();
     }
@@ -61,11 +66,16 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
 
     @Override
     public void showMessage(String msg) {
-        if (msg != null) {
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Some error occurred!", Toast.LENGTH_SHORT).show();
-        }
+        new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                if (msg != null) {
+                    Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(BaseActivity.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
     }
 
     @Override

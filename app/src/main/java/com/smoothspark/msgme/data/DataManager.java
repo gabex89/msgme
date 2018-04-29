@@ -7,4 +7,5 @@ import com.smoothspark.msgme.data.network.ApiHelper;
  */
 
 public interface DataManager extends ApiHelper {
+
 }

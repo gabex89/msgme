@@ -56,4 +56,5 @@ public class ApplicationModule {
     ApiHelper provideApiHelper(AppApiHelper appApiHelper) {
         return appApiHelper;
     }
+
 }

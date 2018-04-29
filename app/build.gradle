@@ -13,12 +13,12 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField("String", "URL", "\"https://html5demos.com/web-socket\"")
+            buildConfigField("String", "URL", "\"wss://remy-ws.glitch.me\"")
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "URL", "\"https://html5demos.com/web-socket\"")
+            buildConfigField("String", "URL", "\"wss://remy-ws.glitch.me\"")
         }
     }
     compileOptions {
@@ -42,6 +42,7 @@ dependencies {
 
     // image
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    implementation 'de.hdodenhof:circleimageview:1.3.0'
 
     // parser
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"

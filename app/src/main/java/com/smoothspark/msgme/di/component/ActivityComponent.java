@@ -2,7 +2,7 @@ package com.smoothspark.msgme.di.component;
 
 import com.smoothspark.msgme.di.PerActivity;
 import com.smoothspark.msgme.di.module.ActivityModule;
-import com.smoothspark.msgme.ui.mainpage.MainActivity;
+import com.smoothspark.msgme.ui.main.MainPageActivity;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 
-    void inject(MainActivity activity);
+    void inject(MainPageActivity activity);
 }
