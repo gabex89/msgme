@@ -31,13 +31,11 @@ public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
                 getMvpView().hideLoading();
-                webSocket.send("Hy");
                 getMvpView().showMessage("Socket open");
             }
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                getMvpView().showMessage("message received");
                 getMvpView().updateMessagesList(text);
             }
 

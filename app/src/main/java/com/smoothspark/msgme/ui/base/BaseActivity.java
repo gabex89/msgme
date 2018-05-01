@@ -1,9 +1,6 @@
 package com.smoothspark.msgme.ui.base;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -66,16 +63,13 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
 
     @Override
     public void showMessage(String msg) {
-        new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                if (msg != null) {
-                    Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(BaseActivity.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
-                }
+        runOnUiThread(() -> {
+            if (msg != null) {
+                Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(BaseActivity.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
             }
-        };
+        });
     }
 
     @Override

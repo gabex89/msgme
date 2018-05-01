@@ -42,7 +42,7 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         if (messages != null && messages.size() > 0) {
             return messages.size();
         } else {
-            return 1;
+            return 0;
         }
     }
 
@@ -50,19 +50,15 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         if (messages == null) {
             messages = new ArrayList<>();
         }
-        messages.add(message);
+        messages.add(0, message);
 
         notifyDataSetChanged();
     }
-
 
     class MessageViewHolder extends BaseViewHolder {
 
         @BindView(R.id.messageTextView)
         TextView messageTextView;
-
-        @BindView(R.id.messengerTextView)
-        TextView messengerNameTExtView;
 
         @BindView(R.id.messengerImageView)
         ImageView messengerImageView;
@@ -75,7 +71,6 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         @Override
         protected void clear() {
             messageTextView.setText("");
-            messengerNameTExtView.setText("");
             messengerImageView.setImageDrawable(null);
         }
 

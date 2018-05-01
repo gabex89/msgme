@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -92,6 +93,8 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
     private void initLayout() {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(messageListAdapter);
 
@@ -108,7 +111,7 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
 
             @Override
             public void afterTextChanged(Editable s) {
-                sendButton.setEnabled(s.length() > 0);
+                sendButton.setEnabled(s.toString().trim().length() > 0);
             }
         });
     }
