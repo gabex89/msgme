@@ -24,6 +24,7 @@ public class AppApiHelper implements ApiHelper {
     public AppApiHelper() {
         okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(3, TimeUnit.SECONDS)
+                .pingInterval(10, TimeUnit.SECONDS)
                 .build();
     }
 

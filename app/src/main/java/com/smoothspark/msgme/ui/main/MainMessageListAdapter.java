@@ -46,13 +46,12 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         }
     }
 
-    public void addItems(String message) {
-        if (messages != null) {
-            messages.add(message);
-        } else {
+    public void addItem(String message) {
+        if (messages == null) {
             messages = new ArrayList<>();
-            messages.add(message);
         }
+        messages.add(message);
+
         notifyDataSetChanged();
     }
 
@@ -68,7 +67,7 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         @BindView(R.id.messengerImageView)
         ImageView messengerImageView;
 
-        public MessageViewHolder(View itemView) {
+        MessageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

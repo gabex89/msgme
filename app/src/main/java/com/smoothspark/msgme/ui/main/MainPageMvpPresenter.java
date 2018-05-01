@@ -9,4 +9,6 @@ public interface MainPageMvpPresenter<V extends MainPageMvpView>
         extends MvpPresenter<V> {
 
     void openWebSocket();
+
+    boolean sendMessage(String message);
 }

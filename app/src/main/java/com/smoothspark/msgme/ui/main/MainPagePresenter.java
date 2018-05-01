@@ -17,6 +17,8 @@ import okhttp3.WebSocketListener;
 public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<V>
         implements MainPageMvpPresenter<V> {
 
+    private WebSocket webSocket;
+
     @Inject
     public MainPagePresenter(DataManager dataManager) {
         super(dataManager);
@@ -25,10 +27,11 @@ public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<
     @Override
     public void openWebSocket() {
         getMvpView().showLoading();
-        getDataManager().openWebSocket(new WebSocketListener() {
+        webSocket = getDataManager().openWebSocket(new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
                 getMvpView().hideLoading();
+                webSocket.send("Hy");
                 getMvpView().showMessage("Socket open");
             }
 
@@ -50,5 +53,10 @@ public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<
                 getMvpView().showMessage("Socket failed to open");
             }
         });
+    }
+
+    @Override
+    public boolean sendMessage(String message) {
+        return webSocket.send(message);
     }
 }
