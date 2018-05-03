@@ -8,14 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.smoothspark.msgme.R;
 import com.smoothspark.msgme.ui.base.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.smoothspark.msgme.utils.ConstantUtil.IMAGE_URL_REGEXP;
 
 /**
  * Created by SmoothSpark on 2018. 04. 29.
@@ -63,6 +68,9 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         @BindView(R.id.messengerImageView)
         ImageView messengerImageView;
 
+        @BindView(R.id.imageThumbnailImageView)
+        ImageView imageThumbnailImageView;
+
         MessageViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -81,9 +89,23 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             if (!messages.isEmpty()) {
                 String message = messages.get(position);
                 if (message != null) {
+                    String imageUrl = getImageUrlIfExist(message);
+                    if (!imageUrl.isEmpty()) {
+                        Glide.with(imageThumbnailImageView).load(imageUrl).into(imageThumbnailImageView);
+                        imageThumbnailImageView.setVisibility(View.VISIBLE);
+                    }
                     messageTextView.setText(message);
                 }
             }
+        }
+
+        private String getImageUrlIfExist(String message) {
+            Pattern pat = Pattern.compile(IMAGE_URL_REGEXP);
+            Matcher matcher = pat.matcher(message);
+            if (matcher.find()) {
+                return matcher.group();
+            }
+            return "";
         }
     }
 }

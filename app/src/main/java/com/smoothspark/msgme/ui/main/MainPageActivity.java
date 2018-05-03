@@ -10,8 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.smoothspark.msgme.R;
@@ -46,7 +46,7 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
     ProgressBar progressBar;
 
     @BindView(R.id.sendButton)
-    Button sendButton;
+    ImageButton sendButton;
 
     @BindView(R.id.messageEditText)
     EditText messageEditText;
@@ -95,6 +95,7 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation()));
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(messageListAdapter);
 
