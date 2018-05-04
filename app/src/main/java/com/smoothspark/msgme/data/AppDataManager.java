@@ -3,6 +3,7 @@ package com.smoothspark.msgme.data;
 import android.content.Context;
 
 import com.smoothspark.msgme.data.db.DbHelper;
+import com.smoothspark.msgme.data.db.model.Message;
 import com.smoothspark.msgme.data.network.ApiHelper;
 import com.smoothspark.msgme.di.ApplicationContext;
 
@@ -39,7 +40,12 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public List<String> getPreviousMessages() {
-        return dbHelper.getPreviousMessages();
+    public List<Message> retrievePreviousMessagesFromDb() {
+        return dbHelper.retrievePreviousMessagesFromDb();
+    }
+
+    @Override
+    public boolean saveMessagesToDb(List<Message> messages) {
+        return dbHelper.saveMessagesToDb(messages);
     }
 }

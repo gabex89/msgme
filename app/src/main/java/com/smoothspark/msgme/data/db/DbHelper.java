@@ -1,5 +1,7 @@
 package com.smoothspark.msgme.data.db;
 
+import com.smoothspark.msgme.data.db.model.Message;
+
 import java.util.List;
 
 /**
@@ -7,5 +9,7 @@ import java.util.List;
  */
 public interface DbHelper {
 
-    List<String> getPreviousMessages();
+    List<Message> retrievePreviousMessagesFromDb();
+
+    boolean saveMessagesToDb(List<Message> messages);
 }

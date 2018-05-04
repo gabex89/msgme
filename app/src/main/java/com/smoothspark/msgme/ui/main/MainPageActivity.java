@@ -81,7 +81,25 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
 
     @Override
     public void updateMessagesList(String text) {
-        runOnUiThread(() -> messageListAdapter.addItem(text));
+        runOnUiThread(() -> {
+            if (!isFinishing() && messageListAdapter != null && recyclerView != null) {
+                messageListAdapter.addItem(text);
+                recyclerView.scrollToPosition(0);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        messageListAdapter.clear();
+        messageListAdapter.addChatItems(presenter.loadAllChatEntries());
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        presenter.saveAllChatEntries(messageListAdapter.getAllMessages());
+        super.onPause();
     }
 
     @Override
@@ -117,12 +135,16 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
         });
     }
 
+
     @OnClick(R.id.sendButton)
     void sendMessage() {
         String message = messageEditText.getText().toString();
         if (presenter.sendMessage(message)) {
             messageEditText.setText(EMPTY_TEXT);
             messageListAdapter.addItem(message);
+            recyclerView.scrollToPosition(0);
+        } else {
+            presenter.openWebSocket();
         }
     }
 }

@@ -2,8 +2,8 @@ package com.smoothspark.msgme.data.db;
 
 import com.smoothspark.msgme.data.db.model.DaoMaster;
 import com.smoothspark.msgme.data.db.model.DaoSession;
+import com.smoothspark.msgme.data.db.model.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,9 +23,15 @@ public class AppDbHelper implements DbHelper {
     }
 
     @Override
-    public List<String> getPreviousMessages() {
-//        return daoSession.getUserDao().loadAll();
-        return new ArrayList<>();
+    public List<Message> retrievePreviousMessagesFromDb() {
+        return daoSession.getMessageDao().loadAll();
+    }
+
+    @Override
+    public boolean saveMessagesToDb(List<Message> messages) {
+        daoSession.getMessageDao().deleteAll();
+        daoSession.getMessageDao().insertInTx(messages);
+        return true;
     }
 
 }

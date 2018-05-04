@@ -3,7 +3,10 @@ package com.smoothspark.msgme.ui.main;
 import android.support.annotation.Nullable;
 
 import com.smoothspark.msgme.data.DataManager;
+import com.smoothspark.msgme.data.db.model.Message;
 import com.smoothspark.msgme.ui.base.BasePresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,25 +33,33 @@ public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<
         webSocket = getDataManager().openWebSocket(new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
-                getMvpView().hideLoading();
-                getMvpView().showMessage("Socket open");
+                if (isViewAttached()) {
+                    getMvpView().hideLoading();
+                    getMvpView().showMessage("Socket open");
+                }
             }
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                getMvpView().updateMessagesList(text);
+                if (isViewAttached()) {
+                    getMvpView().updateMessagesList(text);
+                }
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                getMvpView().hideLoading();
-                getMvpView().showMessage("Socket closed");
+                if (isViewAttached()) {
+                    getMvpView().hideLoading();
+                    getMvpView().showMessage("Socket closed");
+                }
             }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
-                getMvpView().hideLoading();
-                getMvpView().showMessage("Socket failed to open");
+                if (isViewAttached()) {
+                    getMvpView().hideLoading();
+                    getMvpView().showMessage("Socket failed to open");
+                }
             }
         });
     }
@@ -57,4 +68,16 @@ public class MainPagePresenter<V extends MainPageMvpView> extends BasePresenter<
     public boolean sendMessage(String message) {
         return webSocket.send(message);
     }
+
+    @Override
+    public boolean saveAllChatEntries(List<Message> chatEntries) {
+        return getDataManager().saveMessagesToDb(chatEntries);
+    }
+
+    @Override
+    public List<Message> loadAllChatEntries() {
+        return getDataManager().retrievePreviousMessagesFromDb();
+    }
+
+
 }
