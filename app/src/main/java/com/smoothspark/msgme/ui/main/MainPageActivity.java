@@ -10,8 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.smoothspark.msgme.R;
@@ -46,7 +46,7 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
     ProgressBar progressBar;
 
     @BindView(R.id.sendButton)
-    Button sendButton;
+    ImageButton sendButton;
 
     @BindView(R.id.messageEditText)
     EditText messageEditText;
@@ -81,7 +81,25 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
 
     @Override
     public void updateMessagesList(String text) {
-        runOnUiThread(() -> messageListAdapter.addItem(text));
+        runOnUiThread(() -> {
+            if (!isFinishing() && messageListAdapter != null && recyclerView != null) {
+                messageListAdapter.addItem(text);
+                recyclerView.scrollToPosition(0);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        messageListAdapter.clear();
+        messageListAdapter.addChatItems(presenter.loadAllChatEntries());
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        presenter.saveAllChatEntries(messageListAdapter.getAllMessages());
+        super.onPause();
     }
 
     @Override
@@ -95,6 +113,7 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation()));
+        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(messageListAdapter);
 
@@ -116,12 +135,16 @@ public class MainPageActivity extends BaseActivity implements MainPageMvpView {
         });
     }
 
+
     @OnClick(R.id.sendButton)
     void sendMessage() {
         String message = messageEditText.getText().toString();
         if (presenter.sendMessage(message)) {
             messageEditText.setText(EMPTY_TEXT);
             messageListAdapter.addItem(message);
+            recyclerView.scrollToPosition(0);
+        } else {
+            presenter.openWebSocket();
         }
     }
 }

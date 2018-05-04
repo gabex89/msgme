@@ -6,10 +6,14 @@ import android.content.Context;
 import com.smoothspark.msgme.BuildConfig;
 import com.smoothspark.msgme.data.AppDataManager;
 import com.smoothspark.msgme.data.DataManager;
+import com.smoothspark.msgme.data.db.AppDbHelper;
+import com.smoothspark.msgme.data.db.DbHelper;
 import com.smoothspark.msgme.data.network.ApiHelper;
 import com.smoothspark.msgme.data.network.AppApiHelper;
 import com.smoothspark.msgme.di.ApiInfo;
 import com.smoothspark.msgme.di.ApplicationContext;
+import com.smoothspark.msgme.di.DatabaseInfo;
+import com.smoothspark.msgme.utils.ConstantUtil;
 
 import javax.inject.Singleton;
 
@@ -46,6 +50,12 @@ public class ApplicationModule {
     }
 
     @Provides
+    @DatabaseInfo
+    String provideDatabaseName() {
+        return ConstantUtil.DB_NAME;
+    }
+
+    @Provides
     @Singleton
     DataManager provideDataManager(AppDataManager appDataManager) {
         return appDataManager;
@@ -55,6 +65,12 @@ public class ApplicationModule {
     @Singleton
     ApiHelper provideApiHelper(AppApiHelper appApiHelper) {
         return appApiHelper;
+    }
+
+    @Provides
+    @Singleton
+    DbHelper provideDbHelper(AppDbHelper appDbHelper) {
+        return appDbHelper;
     }
 
 }

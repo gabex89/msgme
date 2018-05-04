@@ -9,20 +9,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smoothspark.msgme.R;
+import com.smoothspark.msgme.data.db.model.Message;
+import com.smoothspark.msgme.di.module.GlideApp;
 import com.smoothspark.msgme.ui.base.BaseViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.smoothspark.msgme.utils.ConstantUtil.IMAGE_URL_REGEXP;
 
 /**
  * Created by SmoothSpark on 2018. 04. 29.
  */
 public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private List<String> messages = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     @NonNull
     @Override
@@ -34,6 +41,8 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+        //TODO need to find another solution ASAP!!!
+        holder.setIsRecyclable(false);
         holder.onBind(position);
     }
 
@@ -46,12 +55,31 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return 0;
+    }
+
     public void addItem(String message) {
         if (messages == null) {
             messages = new ArrayList<>();
         }
-        messages.add(0, message);
+        messages.add(0, new Message(null, message, System.currentTimeMillis()));
 
+        notifyDataSetChanged();
+    }
+
+    public List<Message> getAllMessages() {
+        return messages;
+    }
+
+    public void addChatItems(List<Message> messages) {
+        this.messages = messages;
+        Collections.sort(messages);
+    }
+
+    public void clear() {
+        messages = new ArrayList<>();
         notifyDataSetChanged();
     }
 
@@ -62,6 +90,9 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
         @BindView(R.id.messengerImageView)
         ImageView messengerImageView;
+
+        @BindView(R.id.imageThumbnailImageView)
+        ImageView imageThumbnailImageView;
 
         MessageViewHolder(View itemView) {
             super(itemView);
@@ -79,11 +110,27 @@ public class MainMessageListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             super.onBind(position);
 
             if (!messages.isEmpty()) {
-                String message = messages.get(position);
+                Message message = messages.get(position);
                 if (message != null) {
-                    messageTextView.setText(message);
+                    String imageUrl = getImageUrlIfExist(message.getMessage());
+                    if (!imageUrl.isEmpty()) {
+                        GlideApp.with(imageThumbnailImageView)
+                                .load(imageUrl)
+                                .placeholder(android.R.drawable.ic_delete)
+                                .into(imageThumbnailImageView);
+                    }
+                    messageTextView.setText(message.getMessage());
                 }
             }
+        }
+
+        private String getImageUrlIfExist(String message) {
+            Pattern pat = Pattern.compile(IMAGE_URL_REGEXP);
+            Matcher matcher = pat.matcher(message);
+            if (matcher.find()) {
+                return matcher.group();
+            }
+            return "";
         }
     }
 }
